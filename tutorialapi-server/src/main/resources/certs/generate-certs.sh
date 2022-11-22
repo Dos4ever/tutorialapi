@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 openssl genrsa -out ca.priv 2048
 
 openssl req -x509 -new -nodes -sha256 -days 1825 -key ca.priv \
-        -out ca.crt -subj "/C=DE/ST=Nordrhein-Westfalen/L=Aachen/O=tutorialapi/CN=tutorialapi.com"
+        -out ca.crt -subj "/C=DE/ST=Nordrhein-Westfalen/L=Aachen/O=tutorialapi/CN=ca"
 
 # Create server certificate and key
 
@@ -26,13 +26,13 @@ DNS.3 = www.tutorialapi.com
 EOF
 
 openssl x509 -req -in tutorialapi.csr -CA ca.crt -CAkey ca.priv \
-        -out tutorialapi.crt -CAcreatesrial -days 1825 -sha256 \
+        -out tutorialapi.crt -CAcreateserial -days 1825 -sha256 \
         -extfile tutorialapi.ext
 
 openssl pkcs12 -export -in tutorialapi.crt -inkey tutorialapi.priv \
         -out tutorialapi.p12 -certfile tutorialapi.crt \
         -password pass:lifechange -name tutorialapi
-        
+
 openssl pkcs12 -in tutorialapi.p12 -out tutorialapi.pub \
         -clcerts -nokeys -passin pass:lifechange \
 
